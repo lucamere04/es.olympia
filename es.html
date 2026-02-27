@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympia AI - Olympic Broadcast Cabin</title>
+
+    <style>
+        :root {
+            --olympic-blue: #0047ab;
+            --ice-blue: #00d4ff;
+            --snow-white: #f5fbff;
+            --frost-white: #e0f7ff;
+            --gold-medal: #00ffff;
+            --silver: #b3e5fc;
+            --deep-ice: #0a1a2e;
+            --neon-cyan: #00ffff;
+            --neon-purple: #b300ff;
+            --ice-gradient: linear-gradient(135deg, #0a1a2e 0%, #001a40 40%, #00d4ff 100%);
+            --cabin-glass: rgba(240, 250, 255, 0.75);
+            --snowflake-anim: snowfall 10s linear infinite;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(ellipse at 50% -50%, #001a40 0%, #0a1a2e 50%, #000 100%);
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Neve di cristallo animata */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(1px 1px at 15% 25%, #00ffff, rgba(0, 255, 255, 0)),
+                radial-gradient(2px 2px at 35% 45%, #ffffff, rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 55% 15%, #00ffff, rgba(0, 255, 255, 0)),
+                radial-gradient(1px 1px at 75% 65%, #ffffff, rgba(255, 255, 255, 0)),
+                radial-gradient(2px 2px at 90% 35%, #00ffff, rgba(0, 255, 255, 0));
+            background-repeat: repeat;
+            background-size: 250px 250px;
+            animation: drift 15s linear infinite, shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translateY(-200px) translateX(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(100vh) translateX(20px) rotate(360deg);
+            }
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes crystalGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 30px rgba(0, 255, 255, 0.2);
+            }
+        }
+
+        .app-container {
+            width: 95%;
+            max-width: 1000px;
+            height: 90vh;
+            background: linear-gradient(135deg, var(--frost-white) 0%, #e0f7ff 100%);
+            backdrop-filter: blur(30px);
+            border: 3px solid rgba(0, 255, 255, 0.4);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.4),
+                0 0 120px rgba(0, 100, 200, 0.2),
+                inset 0 1px 20px rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 10;
+            animation: crystalGlow 4s ease-in-out infinite;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0a1a2e 0%, #001f47 50%, #003d82 100%);
+            color: #00ffff;
+            padding: 30px 40px;
+            border-radius: 22px 22px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--neon-cyan);
+            box-shadow: 0 15px 50px rgba(0, 255, 255, 0.2),
+                inset 0 1px 0 rgba(0, 255, 255, 0.3);
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8),
+                0 0 40px rgba(0, 200, 255, 0.4);
+            animation: glitch 0.3s ease-in-out infinite;
+        }
+
+        @keyframes glitch {
+
+            0%,
+            100% {
+                transform: skewX(0deg);
+            }
+
+            50% {
+                transform: skewX(-0.5deg);
+            }
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #000;
+            animation: pulse-neon 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8),
+                0 0 60px rgba(179, 0, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid var(--neon-purple);
+        }
+
+        @keyframes pulse-neon {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 60px rgba(179, 0, 255, 0.4);
+            }
+
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 50px rgba(0, 255, 255, 1), 0 0 100px rgba(179, 0, 255, 0.6);
+            }
+        }
+
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: linear-gradient(180deg, rgba(224, 248, 255, 0.5) 0%, rgba(179, 229, 252, 0.3) 100%);
+            position: relative;
+        }
+
+        #chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 255, 0.02) 2px,
+                    rgba(0, 255, 255, 0.02) 4px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+            border-radius: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 18px 24px;
+            border-radius: 12px;
+            line-height: 1.7;
+            font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #00a0d0 0%, var(--neon-cyan) 100%);
+            color: #000;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.4),
+                0 0 15px rgba(0, 255, 255, 0.2);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+        }
+
+        .ai {
+            align-self: flex-start;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 250, 255, 0.9) 100%);
+            color: #0a1a2e;
+            border-bottom-left-radius: 2px;
+            border-left: 4px solid var(--neon-cyan);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1),
+                0 0 20px rgba(0, 255, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .ai b {
+            color: var(--neon-cyan);
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        }
+
+        .input-area {
+            background: linear-gradient(135deg, var(--frost-white) 0%, var(--snow-white) 100%);
+            padding: 25px;
+            display: flex;
+            gap: 15px;
+            border-radius: 0 0 22px 22px;
+            border-top: 2px solid rgba(0, 255, 255, 0.3);
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+                0 -10px 20px rgba(0, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid rgba(0, 255, 255, 0.4);
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02),
+                0 0 10px rgba(0, 255, 255, 0.1);
+            font-family: 'Courier New', monospace;
+        }
+
+        input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02),
+                0 0 30px rgba(0, 255, 255, 0.5),
+                0 0 0 3px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+            background: rgba(240, 250, 255, 0.98);
+        }
+
+        input::placeholder {
+            color: #a0a0a0;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            color: #000;
+            border: 2px solid var(--neon-cyan);
+            padding: 12px 35px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 900;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.5),
+                0 0 15px rgba(179, 0, 255, 0.3);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-cyan) 100%);
+            transform: translateY(-4px) scaleX(1.05);
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.7),
+                0 0 25px rgba(179, 0, 255, 0.5);
+            border-color: var(--neon-purple);
+        }
+
+        button:active {
+            transform: translateY(-1px) scaleX(0.98);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.6),
+                0 0 10px rgba(179, 0, 255, 0.4);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Scrollbar personalizzato - Stile invernale avanaguardista */
+        #chat-container::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        #chat-container::-webkit-scrollbar-track {
+            background: linear-gradient(180deg, rgba(0, 200, 255, 0.1) 0%, rgba(0, 100, 150, 0.05) 100%);
+            border-radius: 10px;
+            border-left: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        #chat-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4),
+                inset 0 0 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        #chat-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6),
+                0 0 10px rgba(179, 0, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>❄️ OLYMPIA ❄️</h1>
+        </header>
+
+        <div id="chat-container">
+            <div class="message ai">
+                <b>Olympia:</b> ◆ Benvenuto nel nexus cristallino ◆<br>Sono quì per trasmetterti il freddo sapere delle
+                divinità invernali olimpiche.<br>Interrogami su: <em>aerodinamica su ghiaccio, segreti di campioni
+                    congelati, fenomeni polari estremi, record ai confini del tempo</em>.<br>La stagione invernale non
+                conosce limiti. Siamo nel 2026. Andiamo oltre. ❄️⛸️ᴸᴵᴳᴴᵀ
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Chiedi all'esperto olimpico..." autocomplete="off">
+            <button id="sendBtn">INVIA</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- CONFIGURAZIONE GROQ API (GRATUITA) ---
+        const API_KEY = ""; // Inserisci qui la tua chiave Groq
+        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+        // --- DOM ELEMENTS ---
+        const chatContainer = document.getElementById("chat-container");
+        const userInput = document.getElementById("userInput");
+        const sendBtn = document.getElementById("sendBtn");
+
+        // --- CONVERSATION HISTORY ---
+        let conversationHistory = [
+            {
+                role: "system",
+                content: `Sei 'Olympia', un ex pluri-medagliato olimpico invernale leggendario ed energico.
+PROFILO: Sei un'enciclopedia vivente degli sport invernali.
+TONO: Estremamente entusiasta, tecnico, motivante. Usa termini come 'lamine', 'pendenza', 'centestimi di secondo'.
+REGOLE DI RISPOSTA:
+1. Rispondi sempre con energia (es. 'Oro puro!', 'Che prestazione!').
+2. Includi SEMPRE tre sezioni:
+   - [RISPOSTA TECNICA]: Dettagli precisi sulla richiesta.
+   - [ANEDDOTO DA SPOGLIATOIO]: Un fatto curioso o segreto vissuto da atleta.
+   - [RECORD & NUMERI]: Una statistica impressionante legata al tema.
+3. MULTILINGUA: Se l'utente ti scrive in inglese, francese, ecc., rispondi nella sua lingua mantenendo lo stile.
+4. AMBITO: Copri tutte le edizioni dal 1924 ad oggi.`
+            }
+        ];
+
+        // --- FUNZIONE: Aggiungere messaggio alla chat ---
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${isUser ? "user" : "ai"}`;
+            messageDiv.innerHTML = isUser ? text : `<b>Olympia:</b> ${text}`;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // --- FUNZIONE: Inviare messaggio all'API GROQ ---
+        async function sendMessage() {
+            if (!API_KEY) {
+                addMessage(
+                    "⚠️ ERRORE: Devi inserire la chiave API Groq nel codice HTML!" +
+                    "<br>Vai a: https://console.groq.com/keys<br>Copia la chiave e sostituiscila nella riga: const API_KEY = ",
+                    false
+                );
+                return;
+            }
+
+            const userMessage = userInput.value.trim();
+            console.log("Messaggio utente:", userMessage);
+
+            if (!userMessage) {
+                console.warn("Messaggio vuoto, non inviare");
+                return;
+            }
+
+            // Disabilitare il bottone durante l'invio
+            sendBtn.disabled = true;
+            sendBtn.textContent = "INVIO IN CORSO...";
+
+            // Aggiungere il messaggio dell'utente alla chat
+            addMessage(userMessage, true);
+            userInput.value = "";
+
+            // Aggiungere il messaggio alla cronologia
+            conversationHistory.push({
+                role: "user",
+                content: userMessage
+            });
+
+            try {
+                console.log("Invio richiesta a Groq...");
+
+                // Inviare richiesta all'API Groq
+                const response = await fetch(GROQ_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: conversationHistory,
+                        temperature: 0.7,
+                        max_tokens: 1024
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(
+                        `Errore ${response.status}: ${errorData.error?.message || "Errore sconosciuto"}`
+                    );
+                }
+
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                console.log("Risposta ricevuta:", aiResponse);
+
+                // Aggiungere la risposta alla cronologia
+                conversationHistory.push({
+                    role: "assistant",
+                    content: aiResponse
+                });
+
+                // Mostrare la risposta nella chat
+                addMessage(aiResponse, false);
+            } catch (error) {
+                console.error("Errore API:", error.message);
+                console.error("Dettagli errore completo:", error);
+
+                // Mostrare l'errore nella chat per diagnostica
+                let errorMessage = "Mi scuso! Ho avuto un problema tecnico. ";
+
+                if (error.message && error.message.includes("401")) {
+                    errorMessage += "Chiave API non valida. Controlla il link: https://console.groq.com/keys";
+                } else if (error.message && error.message.includes("429")) {
+                    errorMessage += "Troppe richieste. Attendi un momento e riprova.";
+                } else if (error.message) {
+                    errorMessage += `Errore: ${error.message}`;
+                } else {
+                    errorMessage += "Errore sconosciuto. Riprova!";
+                }
+
+                addMessage(errorMessage + " 🏔️", false);
+            } finally {
+                // Riabilitare il bottone
+                sendBtn.disabled = false;
+                sendBtn.textContent = "INVIA";
+                userInput.focus();
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        console.log("Script caricato, attendono gli event listener...");
+        sendBtn.addEventListener("click", () => {
+            console.log("Bottone cliccato");
+            sendMessage();
+        });
+
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                console.log("Invio con Enter");
+                sendMessage();
+            }
+        });
+    </script>
